@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小妍和灿肖的相遇时光</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>❤️</text></svg>">
+    <meta name="description" content="记录我们相爱的每一刻">
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #ffd1d1, #ff9ecd);
+            font-family: "Microsoft YaHei", sans-serif;
+            color: #333;
+            overflow: hidden;
+            transition: background 1s;
+        }
+
+        /* 欢迎页面样式 */
+        .welcome-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            background: linear-gradient(135deg, #ffd1d1, #ff9ecd);
+            transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .welcome-content {
+            text-align: center;
+            color: #fff;
+            opacity: 0;
+            animation: fadeIn 1s forwards;
+            padding: 2rem;
+            max-width: 800px;
+        }
+
+        .welcome-title {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .welcome-subtitle {
+            font-size: 1.8rem;
+            line-height: 1.5;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .welcome-button {
+            margin-top: 2rem;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            background: linear-gradient(45deg, #2a7fff, #98beff);
+            border: none;
+            border-radius: 25px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            transform: translateY(0);
+            box-shadow: 0 4px 15px rgba(42, 127, 255, 0.2);
+        }
+
+        .welcome-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(42, 127, 255, 0.4);
+        }
+
+        /* 开场动画样式 */
+        .intro-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+            background: linear-gradient(135deg, #ffd1d1, #ff9ecd);
+        }
+
+        .intro-overlay::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.05) 0%, transparent 20%);
+            pointer-events: none;
+        }
+
+        .intro-overlay.exit {
+            transform: translateY(-100%);
+        }
+
+        .intro-content {
+            text-align: center;
+            color: #fff;
+            opacity: 0;
+            animation: fadeIn 1s forwards;
+            padding: 2rem;
+            max-width: 800px;
+        }
+
+        .intro-text {
+            font-size: 1.8rem;
+            line-height: 1.5;
+            white-space: pre-line;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .char {
+            opacity: 0;
+            display: inline-block;
+            transform: translateY(20px);
+        }
+
+        .char.visible {
+            animation: charAppear 0.5s forwards;
+        }
+
+        @keyframes charAppear {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 主内容样式 */
+        .main-content {
+            position: relative;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 1s, transform 1s;
+        }
+
+        .main-content.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 600px;
+            backdrop-filter: blur(10px);
+        }
+
+        /* 名字和计时器样式 */
+        .names {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 1.5rem 0;
+            font-size: 1.3rem;
+            color: #2a7fff;
+        }
+
+        .heart {
+            color: #2a7fff;
+            font-size: 2rem;
+            animation: heartbeat 1.5s infinite;
+            display: inline-block;
+            margin: 0 15px;
+        }
+
+        .timer {
+            font-size: 1.3rem;
+            margin: 1.5rem 0;
+            line-height: 2;
+            color: #444;
+        }
+
+        .time-block {
+            display: inline-block;
+            margin: 0 10px;
+            padding: 5px 10px;
+            background: rgba(42, 127, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .time-block span {
+            color: #2a7fff;
+            font-weight: bold;
+        }
+
+        .message {
+            margin-top: 2rem;
+            padding: 1rem;
+            border-top: 2px solid #98beff;
+            font-size: 1.2rem;
+            color: #666;
+            font-style: italic;
+        }
+
+        .footer {
+            margin-top: 2rem;
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            14% { transform: scale(1.3); }
+            28% { transform: scale(1); }
+            42% { transform: scale(1.3); }
+            70% { transform: scale(1); }
+        }
+
+        @media (max-width: 480px) {
+            .intro-text {
+                font-size: 1.4rem;
+            }
+            .names {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .time-block {
+                margin: 5px;
+            }
+        }
+
+        .text-color-changing {
+            color: #000; /* 初始颜色 */
+            transition: color 1s;
+        }
+
+        .background-color-changing {
+            transition: background 1s;
+        }
+
+        /* 按钮样式 */
+        .show-photos-btn {
+            margin-top: 2rem;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            background: linear-gradient(45deg, #2a7fff, #98beff);
+            border: none;
+            border-radius: 25px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            transform: translateY(0);
+            box-shadow: 0 4px 15px rgba(42, 127, 255, 0.2);
+        }
+
+        .show-photos-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(42, 127, 255, 0.4);
+        }
+
+        /* 照片展示样式 */
+        .photo-gallery {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .photo-gallery.visible {
+            display: flex;
+            opacity: 1;
+        }
+
+        .photo-container {
+            position: relative;
+            width: 80%;
+            max-width: 800px;
+            height: 80vh;
+        }
+
+        .photo {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            opacity: 0;
+            transform: scale(0.8) rotate(-5deg);
+            transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .photo.active {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        .close-gallery {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            z-index: 1001;
+        }
+    </style>
+</head>
+<body>
+    <!-- 欢迎页面 -->
+    <div class="welcome-page" id="welcome-page">
+        <div class="welcome-content">
+            <h1 class="welcome-title">欢迎来到小研和灿肖的世界</h1>
+            <p class="welcome-subtitle">在这里，我们将分享我们美好的相遇</p>
+            <button class="welcome-button" id="start-button">开始</button>
+        </div>
+    </div>
+
+    <!-- 开场动画 -->
+    <div class="intro-overlay" id="intro-overlay">
+        <div class="intro-content">
+            <div class="intro-text text-color-changing">
+在这个浩瀚的世界里
+有两个灵魂悄然相遇
+小妍和灿肖
+命运的齿轮在此刻完美咬合
+
+或许是星光在引导
+或许是风在推动
+我们的故事
+就这样美好地开始了
+
+每一次眼神的交汇
+都是心跳的加速
+每一次不经意的微笑
+都是上天最好的馈赠
+
+在时光的长河里
+我们携手同行
+让每一个瞬间
+都成为永恒的珍藏
+
+这一路上
+有你真好
+让我们继续书写
+属于我们的浪漫篇章</div>
+        </div>
+    </div>
+
+    <!-- 主内容 -->
+    <div class="main-content">
+        <div class="container">
+            <h1>我们的相识时光</h1>
+            <div class="names">
+                <span>小妍</span>
+                <span class="heart">♥</span>
+                <span>灿肖</span>
+            </div>
+            <div class="timer" id="timer"></div>
+            <div class="date" id="firstDate"></div>
+            <div class="message">
+                "遇见你，是我生命中最美好的意外"<br>
+                "愿我们携手相伴，走过漫长岁月"
+            </div>
+            <button class="show-photos-btn">点击查看最美的小妍</button>
+            <div class="footer">
+                © 2024 永远在一起
+            </div>
+        </div>
+    </div>
+
+    <!-- 照片展示区域 -->
+    <div class="photo-gallery">
+        <div class="close-gallery">×</div>
+        <div class="photo-container">
+            <img src="./照片一.jpg" alt="照片1" class="photo">
+            <img src="./照片二.jpg" alt="照片2" class="photo">
+            <img src="./照片三.jpg" alt="照片3" class="photo">
+            <img src="./照片四.jpg" alt="照片4" class="photo">
+            <img src="./照片五.jpg" alt="照片5" class="photo">
+            <img src="./照片六.jpg" alt="照片6" class="photo">
+            <img src="./照片七.jpg" alt="照片7" class="photo">
+            <img src="./照片八.jpg" alt="照片8" class="photo">
+            <img src="./照片九.jpg" alt="照片9" class="photo">
+        </div>
+    </div>
+
+    <script>
+        // 颜色数组
+        const colors = ['#FF5733', '#33FF57', '#3357FF', '#FF33A1', '#FFC333'];
+        let colorIndex = 0;
+
+        // 更改文字颜色
+        function changeTextColor() {
+            const elements = document.querySelectorAll('.text-color-changing');
+            elements.forEach(element => {
+                element.style.color = colors[colorIndex];
+            });
+            colorIndex = (colorIndex + 1) % colors.length;
+        }
+
+        // 更改背景颜色
+        function changeBackgroundColor() {
+            const body = document.querySelector('body');
+            const introOverlay = document.querySelector('#intro-overlay');
+            body.style.background = `linear-gradient(135deg, ${colors[colorIndex]}, ${colors[(colorIndex + 1) % colors.length]})`;
+            introOverlay.style.background = `linear-gradient(135deg, ${colors[colorIndex]}, ${colors[(colorIndex + 1) % colors.length]})`;
+            colorIndex = (colorIndex + 1) % colors.length;
+        }
+
+        // 设置定时器
+        setInterval(changeTextColor, 4000);
+        setInterval(changeBackgroundColor, 4000);
+
+        // 欢迎页面按钮点击事件
+        document.querySelector('#start-button').addEventListener('click', () => {
+            document.querySelector('.welcome-page').style.transform = 'translateY(-100%)';
+            setTimeout(() => {
+                initIntroAnimation();
+            }, 1500);
+        });
+
+        // 开场动画文字逐字出现效果
+        function initIntroAnimation() {
+            const text = document.querySelector('.intro-text');
+            const characters = text.textContent.split('');
+            text.textContent = '';
+
+            characters.forEach((char, index) => {
+                const span = document.createElement('span');
+                span.textContent = char;
+                span.className = 'char';
+                text.appendChild(span);
+
+                setTimeout(() => {
+                    span.classList.add('visible');
+                }, index * 150); // 每个字显示间隔150ms
+            });
+
+            // 文字动画完成后，开始页面转换
+            setTimeout(() => {
+                document.querySelector('.intro-overlay').classList.add('exit');
+                setTimeout(() => {
+                    document.querySelector('.main-content').classList.add('visible');
+                }, 1000);
+            }, characters.length * 150 + 2000); // 等待所有字符显示完成后再等待2秒
+        }
+
+        // 计时器功能
+        const startDate = new Date('2024-10-31T00:00:00');
+
+        function updateTimer() {
+            const now = new Date();
+            const diff = now - startDate;
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById('timer').innerHTML = `
+                <div class="time-block"><span>${days}</span> 天</div>
+                <div class="time-block"><span>${hours}</span> 小时</div>
+                <div class="time-block"><span>${minutes}</span> 分钟</div>
+                <div class="time-block"><span>${seconds}</span> 秒</div>
+            `;
+        }
+
+        // 页面加载后立即更新一次计时器
+        updateTimer();
+        // 每秒更新一次计时器
+        setInterval(updateTimer, 1000);
+
+        // 照片展示功能
+        const photos = document.querySelectorAll('.photo');
+        let currentPhotoIndex = 0;
+
+        function showNextPhoto() {
+            photos.forEach((photo, index) => {
+                if (index === currentPhotoIndex) {
+                    photo.classList.add('active');
+                } else {
+                    photo.classList.remove('active');
+                }
+            });
+            currentPhotoIndex = (currentPhotoIndex + 1) % photos.length;
+        }
+
+        document.querySelector('.show-photos-btn').addEventListener('click', () => {
+            document.querySelector('.photo-gallery').classList.add('visible');
+            showNextPhoto();
+        });
+
+        document.querySelector('.close-gallery').addEventListener('click', () => {
+            document.querySelector('.photo-gallery').classList.remove('visible');
+        });
+
+        // 照片轮播
+        setInterval(showNextPhoto, 3000); // 每3秒切换一张照片
+    </script>
+</body>
+</html>
